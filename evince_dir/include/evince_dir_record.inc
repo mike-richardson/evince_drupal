@@ -233,14 +233,16 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
   $notes = (array)$xml['Notes'];
 
 //Costs
-  $cost_details = (array)$xml['CostDetails'];
-  $contact_for_costs = $cost_details['ContactForCosts'];
-  $other_costs = $cost_details['OtherCosts'];
-  if ($contact_for_costs != "true"){
-    $costs[] = $cost_details['OtherCosts'];
-  } else {
-    $costs[] = "Please contact for details.";
-  }
+  if (is_array($xml['CostDetails'])) {
+    $cost_details = (array)$xml['CostDetails'];
+    $contact_for_costs = $cost_details['ContactForCosts'];
+    $other_costs = $cost_details['OtherCosts'];
+    if ($contact_for_costs != "true"){
+      $costs[] = $cost_details['OtherCosts'];
+    } else {
+      $costs[] = "Please contact for details.";
+    }
+  } 
 
 
 //Build output array
