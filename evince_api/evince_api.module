@@ -441,13 +441,22 @@ function evince_api_get_results_from_feed($feed = NULL) {
       $repeats[] = $pparts;
     }
 
+    foreach ((array)$subitem['description'] as $contactnumber) {
+      $cn = $contactnumber['child']['http://opp-links.org.uk/XMLSchema/AtomModel'];
+      $type = $cn['type'][0]['data'];
+      $nunmber = $cn['number'][0]['data'];
+      $contacts[$type] = $nunmber;
+    }
+
     $latitude = $item->get_item_tags('http://a9.com/-/opensearch/extensions/geo/1.0/', 'lat');
     $longitude = $item->get_item_tags('http://a9.com/-/opensearch/extensions/geo/1.0/', 'lon');
     $location = $item->get_item_tags('http://a9.com/-/opensearch/extensions/geo/1.0/', 'locationString');
     $relevance = $item->get_item_tags('http://a9.com/-/opensearch/extensions/relevance/1.0/', 'score');
-
+    $full_descriptions = $item->get_item_tags('http://opp-links.org.uk/XMLSchema/AtomModel', 'description');
+    $full_description = $full_descriptions[1]['data'];
     $results['entries'][] = array(
       'title' => $item->get_title(),
+      //'description' =>$full_description,
       'description' => $item->get_description(),
       'latitude' => $latitude[0]['data'],
       'longitude' => $longitude[0]['data'],
@@ -459,6 +468,7 @@ function evince_api_get_results_from_feed($feed = NULL) {
       'contact' => $number ? $number : $email,
       'contacts' => $contacts,
       'content' => $item->get_item_tags('http://www.w3.org/2005/Atom', 'content'),
+      'full_data' => $item,
     );
   }
   return $results;

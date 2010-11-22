@@ -43,7 +43,7 @@ function evince_dir_create_node($item) {
   
   if ($node_type) {
     $sfm_node = new stdClass();
-
+    dsm($item['full_data']);
     $sfm_node->title = htmlspecialchars_decode($item['title']);
     $sfm_node->body = $item['description'];
     $sfm_node->teaser = node_teaser($sfm_node->body);
