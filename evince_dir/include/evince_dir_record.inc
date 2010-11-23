@@ -43,22 +43,15 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
   $paon = $paon['Description'];
 
   $street = $bs7666_address['StreetDescription'];
-  
-  //if ($paon!="") {
-    //$street = $paon . " " .$street;  
-  //}
-  
   $town = $bs7666_address['Town'];
   $post_town = $bs7666_address['PostTown'];
-
   $postcode = $bs7666_address['PostCode'];
-
   $address = array();
-
-  if ($paon!=""){
-  	$address[] = $paon;
-  }
-  if ($street) {
+  if (is_numeric(substr($paon,1, 1))) {
+		$address[] = $paon . " " . $street;;
+  } 
+  else {
+		$address[] = $paon;
     $address[] = $street;
   }
   if ($town) {
@@ -69,9 +62,6 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
   }
   $address[] = $postcode;
   $address = implode('<br />', $address);
-  
-  
-  // dsm($gridref);
   $longitude = $gridref['Longitude'];
   $latitude = $gridref['Latitude'];
 
@@ -79,7 +69,6 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
   $contact_number = (array)$contact_details['ContactNumber'];
   $contact_number = $contact_number['TelNationalNumber'];
   $contact_number = format_telfax2($contact_details['ContactNumber'][0]->TelNationalNumber);
-  // print '<pre>'.print_r($contact_details['ContactNumber'][0]->TelNationalNumber).'</pre>';
 
   $email_address = (array)$contact_details['EmailAddress'];
   $email_address = $email_address['EmailAddress'];
@@ -89,25 +78,22 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
     $website_address = (substr(ltrim($website_address), 0, 7) != 'http://' ? 'http://' : '') . $website_address;
   }
   $contacts = array();
-  $contacts[] = 'Telephone: '.$contact_number;
+  $contacts[] = 'Telephone: '. $contact_number;
   if ($email_address) {
-  	$contacts[] = 'Email: <a href="mailto:'.$email_address.'">'.$email_address.'</a>';
+  	$contacts[] = 'Email: <a href="mailto:'. $email_address .'">' . $email_address . '</a>';
   }
   if ($website_address) {
-    $contacts[] = 'Web: <a href="'.$website_address.'">'.$website_address.'</a>';
+    $contacts[] = 'Web: <a href="'. $website_address .'">'. $website_address . '</a>';
   }
   if (empty($contacts)) {
-  	$contacts[]='';
+		$contacts[]='';
   }
   $contacts = implode('<br />', $contacts);
 
 //Availability - to process [Period][Day] etc.
   $avail = (array)$xml['Availability'];
-  //dsm($avail);
   $periods = (array)$avail['Period'];
-  //dsm($periods);
   $days = (array)$periods['Day'];
-  //dsm($days);
   $availability2 = array();
   foreach ($days as $period) {
     $availability2[] = $period;
@@ -118,18 +104,15 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
   }
   $availability2 = implode('<br />', $availability2);
 
-
-
-
 //Availability - process start and end dates for services only
   $avail = (array)$xml['Availability'];
   $start = $avail['StartDateTime'];
   $end = $avail['EndDateTime'];
-  if ($record_type == 'ascservices') {
+	if ($record_type == 'ascservices') {
 	if ($start && $start!='') {
-	  $availability = array();
-	  $ignore_repeats = FALSE;
-	  if (strtok($start, ' ') == strtok($end, ' ')) {
+		$availability = array();
+		$ignore_repeats = FALSE;
+		if (strtok($start, ' ') == strtok($end, ' ')) {
 		$availability[] = date("D d/m/Y", strtotime($start));
 		$ignore_repeats = TRUE;
 	  } else {
@@ -145,7 +128,6 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
 
   }
   
-
 //Suitable Age Range
   $age_range = (array)$xml['SuitableAgeRange'];
   $age_from = (array)$age_range['From'];
@@ -247,13 +229,6 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
 
 //Build output array
 //++++++++++++++++++
-  // $output .= '<h1 class="title" id="page-title">'.$title.'</h1>';
-  
-  //foreach (range('A', 'Z') as $initial) {
-	// $links[] = l($initial . ' ', 'evince/dir/atoz/'. $initial);
-    //$output .= '<a href="/evince/dir/atoz/'.$initial.'" class="atoz-link">'.$initial.'</a>';
-  //}
-  // $links = implode(' ', $links);
 
   $output .= '<h2>'. $title .'</h2>';
   $output .= '<p>'. $description .'</p>';
@@ -262,7 +237,6 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
       dsm($data->data);
   } 
   
-
   if ($address) {
   	$hdr = array('Address');
   	$row = array();
@@ -340,7 +314,6 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
   }
 
 
-  //dsm($availability2);
   if ($availability2) {
     $hdr = array('Availability');
     $row = array();
@@ -349,8 +322,7 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
     );
     $output .= "<div class='availability'>" . theme('table', $hdr, $row) . "</div>";
   }
-  //$output .= "<p>Availability: $availability2.</p>";
-  //$output .= "<p>Long: $longitude, Lat: $latitude</p>";
+  $output .= "<p><< Go back to <a href='#' onclick='history.go(-1);return false;'>your search results</a></p>";
   return $output;
 }
 
