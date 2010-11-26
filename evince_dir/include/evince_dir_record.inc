@@ -7,7 +7,7 @@
  * displays a single evince record
  */
 
-function evince_dir_display_record($record_type = NULL, $record_id = 0) {
+function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $page) {
 
   if (empty($record_type) || empty($record_id)) {
     drupal_set_message('no record to display', 'warning');
@@ -322,7 +322,8 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0) {
     );
     $output .= "<div class='availability'>" . theme('table', $hdr, $row) . "</div>";
   }
-  $output .= "<p><< Go back to <a href='#' onclick='history.go(-1);return false;'>your search results</a></p>";
+
+  $output .= "<p class='back-to-search'><< Go back to <a href='/evince/dir?$ref&page=$page'><strong>your search results</strong></a></p>";
   return $output;
 }
 
