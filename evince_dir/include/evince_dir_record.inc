@@ -21,9 +21,6 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
     return;
   }
   global $user;
-  if ($user->uid) {
-      // dsm($data->data);
-  } 
   $xml = new SimpleXMLElement($data->data);
   $xml = (array)$xml;
   $title = $xml['DC.Title'];
@@ -46,11 +43,13 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $town = $bs7666_address['Town'];
   $post_town = $bs7666_address['PostTown'];
   $postcode = $bs7666_address['PostCode'];
-  $address = array();
-  if (is_numeric(substr($paon,1, 1))) {
+  $address = NULL;
+  if (is_numeric(substr($paon,0,1))) {
+  	$address = array();
 		$address[] = $paon . " " . $street;;
   } 
   else {
+    $address = array();
 		$address[] = $paon;
     $address[] = $street;
   }
@@ -232,10 +231,12 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
 
   $output .= '<h2>'. $title .'</h2>';
   $output .= '<p>'. $description .'</p>';
-  global $user;
-  if ($user->uid) {
-      dsm($data->data);
-  } 
+  
+  // Debug below
+  //global $user;
+  //if ($user->uid) {
+  //    dsm($data->data);
+  //} 
   
   if ($address) {
   	$hdr = array('Address');
@@ -399,39 +400,3 @@ function split_number($number,$split) {
 function sort_str_len($a, $b) {
   return strlen($b)-strlen($a);
 }
-
-function array_sort($array, $on, $order=SORT_ASC)
-{
-    $new_array = array();
-    $sortable_array = array();
-
-    if (count($array) > 0) {
-        foreach ($array as $k => $v) {
-            if (is_array($v)) {
-                foreach ($v as $k2 => $v2) {
-                    if ($k2 == $on) {
-                        $sortable_array[$k] = $v2;
-                    }
-                }
-            } else {
-                $sortable_array[$k] = $v;
-            }
-        }
-
-        switch ($order) {
-            case SORT_ASC:
-                asort($sortable_array);
-            break;
-            case SORT_DESC:
-                arsort($sortable_array);
-            break;
-        }
-
-        foreach ($sortable_array as $k => $v) {
-            $new_array[$k] = $array[$k];
-        }
-    }
-
-    return $new_array;
-}
-
