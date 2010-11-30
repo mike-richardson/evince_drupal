@@ -44,13 +44,13 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $post_town = $bs7666_address['PostTown'];
   $postcode = $bs7666_address['PostCode'];
   $address = NULL;
-  if (is_numeric(substr($paon,0,1))) {
-  	$address = array();
-		$address[] = $paon . " " . $street;;
+  if (is_numeric(substr($paon, 0, 1))) {
+    $address = array();
+	  $address[] = $paon . " " . $street;;
   } 
   else {
     $address = array();
-		$address[] = $paon;
+	  $address[] = $paon;
     $address[] = $street;
   }
   if ($town) {
@@ -79,13 +79,13 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $contacts = array();
   $contacts[] = 'Telephone: '. $contact_number;
   if ($email_address) {
-  	$contacts[] = 'Email: <a href="mailto:'. $email_address .'">' . $email_address . '</a>';
+    $contacts[] = 'Email: <a href="mailto:'. $email_address .'">' . $email_address . '</a>';
   }
   if ($website_address) {
     $contacts[] = 'Web: <a href="'. $website_address .'">'. $website_address . '</a>';
   }
   if (empty($contacts)) {
-		$contacts[]='';
+	  $contacts[]='';
   }
   $contacts = implode('<br />', $contacts);
 
@@ -107,19 +107,21 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $avail = (array)$xml['Availability'];
   $start = $avail['StartDateTime'];
   $end = $avail['EndDateTime'];
-	if ($record_type == 'ascservices') {
-	if ($start && $start!='') {
-		$availability = array();
-		$ignore_repeats = FALSE;
-		if (strtok($start, ' ') == strtok($end, ' ')) {
-		$availability[] = date("D d/m/Y", strtotime($start));
-		$ignore_repeats = TRUE;
-	  } else {
+  if ($record_type == 'ascservices') {
+  if ($start && $start!='') {
+	  $availability = array();
+	  $ignore_repeats = FALSE;
+	  if (strtok($start, ' ') == strtok($end, ' ')) {
+	  $availability[] = date("D d/m/Y", strtotime($start));
+    $ignore_repeats = TRUE;
+	  } 
+	  else {
 	    $availability[] = date("D d/m/Y", strtotime($start)) . ' to ' . date("D d/m/Y", strtotime($end));
 	  }
 	  if (strstr($start, 'T') == strstr($end, 'T')) {
 	    $availability[] = 'All day';
-	  } else {
+	  } 
+	  else {
 	    $availability[] = 'From ' . date("ga", strtotime($start)) . ' to ' . date("ga", strtotime($end));
 	  }
 	  $availability = implode('<br />', $availability);
@@ -134,17 +136,17 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $agerange = array();
   if ($age_from) {
     $agerange[] = 'From: ' . $age_from['Years'] . 'yrs ';
-    if ($age_from['Months']){
+    if ($age_from['Months']) {
       $agerange[] .= $age_from['Months'] . 'm';
     }
     if ($age_to['Years']) {
       $agerange[] = 'To: ' . $age_to['Years'] . 'yrs ';
-      if ($age_to['Months']){
+      if ($age_to['Months']) {
         }
         $agerange[] .=  $age_to['Months'] . 'm';
       }
-  } else
-  {
+  } 
+  else {
     $agerange[]='';
   }
   $agerange = implode('<br />', $agerange);
@@ -218,9 +220,10 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
     $cost_details = (array)$xml['CostDetails'];
     $contact_for_costs = $cost_details['ContactForCosts'];
     $other_costs = $cost_details['OtherCosts'];
-    if ($contact_for_costs != "true"){
+    if ($contact_for_costs != "true") {
       $costs[] = $cost_details['OtherCosts'];
-    } else {
+    } 
+    else {
       $costs[] = "Please contact for details.";
     }
   } 
@@ -231,20 +234,15 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
 
   $output .= '<h2>'. $title .'</h2>';
   $output .= '<p>'. $description .'</p>';
-  
-  // Debug below
-  //global $user;
-  //if ($user->uid) {
-  //    dsm($data->data);
-  //} 
-  
-  if ($address) {
-  	$hdr = array('Address');
-  	$row = array();
-  	$row[] = array(
-    	'#address' => $address,
-  	);
-  	$output .= "<div class='addblock'>" . theme('table', $hdr, $row) . "</div>";
+
+    if ($address) {
+    $hdr = array('Address');
+    $row = array();
+    $row[] = array(
+      '#address' => $address,
+    );
+    $output .= "<div class='addblock'>" . theme('table', $hdr, $row) . "</div>";
+    $output .= "<div id='map_canvas' style='width: 100%; height: 100%'></div>";
   }
   if ($contacts) {
     $hdr = array('Contact');
@@ -329,16 +327,16 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
 }
 
 
-function format_telfax2 ($number,$fax=false) {
+function format_telfax2 ($number, $fax=false) {
   // http://james.cridland.net/code/format_uk_phonenumbers.html
   // v2: worked on by Olly Benson to make it look better and work faster!
   // v2.1: removal of a bugette
   // Change the international number format and remove any non-number character
   $number=ereg_replace( '[^0-9]+','',str_replace("+", "00", $number)); 
   // Turn number into array based on Telephone Format
-  $number_array = split_number($number,explode(",",get_telephone_format($number)));
+  $number_array = split_number($number,explode(",", get_telephone_format($number)));
   // Add brackets around first split of numbers if number starts with 01 or 02
-  if (substr($number,0,2)=="01" || substr($number,0,2)=="02") $number_array[0]="(".$number_array[0].")";
+  if (substr($number, 0, 2)=="01" || substr($number, 0, 2)=="02") $number_array[0]="(".$number_array[0].")";
   // Convert array back into string, split by spaces
   $formatted_number = implode(" ",$number_array);
   return $formatted_number;
@@ -387,11 +385,11 @@ function get_telephone_format($number) {
   return $value;
 }
 
-function split_number($number,$split) {
+function split_number($number, $split) {
   $start=0;
   $array = array();
   foreach($split AS $value) {
-    $array[] = substr($number,$start,$value);
+    $array[] = substr($number, $start, $value);
     $start = $start+$value;
   }
   return $array;
