@@ -21,6 +21,9 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
     return;
   }
   global $user;
+  if ($user->uid) {
+    dsm($data);
+  }
   $xml = new SimpleXMLElement($data->data);
   $xml = (array)$xml;
   $title = $xml['DC.Title'];
