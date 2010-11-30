@@ -46,11 +46,11 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $address = NULL;
   if (is_numeric(substr($paon, 0, 1))) {
     $address = array();
-	  $address[] = $paon . " " . $street;;
+    $address[] = $paon . " " . $street;;
   } 
   else {
     $address = array();
-	  $address[] = $paon;
+    $address[] = $paon;
     $address[] = $street;
   }
   if ($town) {
@@ -85,7 +85,7 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
     $contacts[] = 'Web: <a href="'. $website_address .'">'. $website_address . '</a>';
   }
   if (empty($contacts)) {
-	  $contacts[]='';
+    $contacts[]='';
   }
   $contacts = implode('<br />', $contacts);
 
@@ -109,23 +109,23 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $end = $avail['EndDateTime'];
   if ($record_type == 'ascservices') {
   if ($start && $start!='') {
-	  $availability = array();
-	  $ignore_repeats = FALSE;
-	  if (strtok($start, ' ') == strtok($end, ' ')) {
-	  $availability[] = date("D d/m/Y", strtotime($start));
+    $availability = array();
+    $ignore_repeats = FALSE;
+    if (strtok($start, ' ') == strtok($end, ' ')) {
+    $availability[] = date("D d/m/Y", strtotime($start));
     $ignore_repeats = TRUE;
-	  } 
-	  else {
-	    $availability[] = date("D d/m/Y", strtotime($start)) . ' to ' . date("D d/m/Y", strtotime($end));
-	  }
-	  if (strstr($start, 'T') == strstr($end, 'T')) {
-	    $availability[] = 'All day';
-	  } 
-	  else {
-	    $availability[] = 'From ' . date("ga", strtotime($start)) . ' to ' . date("ga", strtotime($end));
-	  }
-	  $availability = implode('<br />', $availability);
-	}
+    } 
+    else {
+      $availability[] = date("D d/m/Y", strtotime($start)) . ' to ' . date("D d/m/Y", strtotime($end));
+    }
+    if (strstr($start, 'T') == strstr($end, 'T')) {
+      $availability[] = 'All day';
+    } 
+    else {
+      $availability[] = 'From ' . date("ga", strtotime($start)) . ' to ' . date("ga", strtotime($end));
+    }
+    $availability = implode('<br />', $availability);
+  }
 
   }
   
@@ -327,24 +327,24 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
 }
 
 
-function format_telfax2 ($number, $fax=false) {
+function format_telfax2($number, $fax=FALSE) {
   // http://james.cridland.net/code/format_uk_phonenumbers.html
   // v2: worked on by Olly Benson to make it look better and work faster!
   // v2.1: removal of a bugette
   // Change the international number format and remove any non-number character
-  $number=ereg_replace( '[^0-9]+','',str_replace("+", "00", $number)); 
+  $number=ereg_replace( '[^0-9]+', '', str_replace("+", "00", $number)); 
   // Turn number into array based on Telephone Format
-  $number_array = split_number($number,explode(",", get_telephone_format($number)));
+  $number_array = split_number($number, explode(",", get_telephone_format($number)));
   // Add brackets around first split of numbers if number starts with 01 or 02
-  if (substr($number, 0, 2)=="01" || substr($number, 0, 2)=="02") $number_array[0]="(".$number_array[0].")";
+  if (substr($number, 0, 2)=="01" || substr($number, 0, 2)=="02") $number_array[0]="(". $number_array[0] .")";
   // Convert array back into string, split by spaces
-  $formatted_number = implode(" ",$number_array);
+  $formatted_number = implode(" ", $number_array);
   return $formatted_number;
 }
 
 function get_telephone_format($number) {
   // This uses full codes from http://www.area-codes.org.uk/formatting.shtml
-  $telephone_format = array (
+  $telephone_format = array(
     '02' => "3,4,4",
     '03' => "4,3,4",
     '05' => "5,6", 
@@ -379,8 +379,8 @@ function get_telephone_format($number) {
 
   // Sorts into longest key first
   uksort($telephone_format, "sort_str_len");    
-  foreach ($telephone_format AS $key=>$value) {
-    if (substr($number,0,strlen($key)) == $key) break;
+  foreach ($telephone_format AS $key => $value) {
+    if (substr($number, 0, strlen($key)) == $key) break;
   };
   return $value;
 }
@@ -388,7 +388,7 @@ function get_telephone_format($number) {
 function split_number($number, $split) {
   $start=0;
   $array = array();
-  foreach($split AS $value) {
+  foreach ($split AS $value) {
     $array[] = substr($number, $start, $value);
     $start = $start+$value;
   }

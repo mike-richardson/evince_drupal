@@ -192,7 +192,7 @@ function evince_dir_search_quicksearch_form_validate($form, &$form_state) {
     form_set_error('quick_search', t('Please type something in the search box'));
   }
   // check if quicksearch is a valid postcode, if so, reduce to first part only
-  checkPostcode($form_state['values']['search']['quick_search']);
+  check_postcode($form_state['values']['search']['quick_search']);
 }
 
 function evince_dir_search_quicksearch_form_submit($form, &$form_state) {
@@ -209,12 +209,12 @@ function evince_dir_search_filters_form_validate($form, &$form_state) {
   $radius = $form_state['clicked_button']['#post']['radius'];
   $code = array($postcode);
 
-  if (!checkPostcode($postcode)) {
+  if (!check_postcode($postcode)) {
     $form_state['clicked_button']['#post']['postcode'] = NULL;
     $form_state['clicked_button']['#post']['radius'] = NULL;
   }
   else {
-    $code = getLatLong($code);
+    $code = get_lat_long($code);
     $long = $code['Longitude'];
     $lat = $code['Latitude'];
     $form_state['values']['proximity']['latitude'] = $lat;
