@@ -130,7 +130,7 @@ function evince_dir_search_filters_form(&$form_state = NULL) {
 
   $form['proximity']['postcode'] = array(
     '#type' => 'textfield',
-    '#title' => 'Postcode',
+    '#title' => 'Enter your full postcode',
     '#size' => 10,
     '#name' => 'postcode',
     '#default_value' => $proximity['#postcode'],
@@ -205,6 +205,7 @@ function evince_dir_search_filters_form_validate($form, &$form_state) {
   $code = array($postcode);
 
   if (!check_postcode($postcode)) {
+    drupal_set_message("Postcode check failed looking for $postcode!");
     $form_state['clicked_button']['#post']['postcode'] = NULL;
     $form_state['clicked_button']['#post']['radius'] = NULL;
   }

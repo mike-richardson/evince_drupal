@@ -65,7 +65,9 @@ function check_postcode(&$to_check) {
     $to_check = strtok($postcode, ' '); 
     return TRUE;
   } 
-  else return FALSE;
+  else {
+  	return FALSE;
+  }
 }
 
 function get_lat_long($code) {
