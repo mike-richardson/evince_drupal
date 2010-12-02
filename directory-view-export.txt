@@ -894,8 +894,9 @@ $handler->override_option('fields', array(
   $args=$view->args[\'0\'];
   $page=$view->pager[\'current_page\'];
   $title=$data->node_title;
+  $rectype=$data->node_data_field_result_set_id_field_record_type_value;
   $recid=$data->node_data_field_result_set_id_field_record_id_value;
-  echo "<h3><a href=\'/evince/record/ascserviceproviders/$recid/$args/$page\'>$title</a></h3>";
+  echo "<h3><a href=\'/evince/record/$rectype/$recid/$args/$page\'>$title</a></h3>";
   echo "<p>".htmlspecialchars_decode($data->node_revisions_body)."</p>";
 ?>',
     'exclude' => 0,
