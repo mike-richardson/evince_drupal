@@ -70,6 +70,59 @@ function check_postcode(&$to_check) {
   }
 }
 
+function parse_postcode($postcode) {
+
+	$postcode = strtoupper(ereg_replace("[^A-Za-z0-9]", "", trim($postcode)));
+
+	$lenght = strlen($postcode);
+	
+	if($lenght < 5 OR $lenght == 4){
+		
+		$regex = '/^([A-Z]{1,2})([0-9][0-9A-Z]?)$/';
+		
+		if (preg_match($regex, $postcode, $part)) { 
+			
+			$code = array(
+		                 'full' 	=> $part[1] . $part[2],
+		                 'area'     => $part[1],
+		                 'district' => $part[2],
+		                 'outer'    => $part[1] . $part[2],
+		                 'sector'   => NULL,
+		                 'walk'     => NULL,
+		                 'inner'    => NULL
+		                 );		 
+		
+		}else{
+			
+			$code = NULL;
+			
+		}
+		
+	}else{
+		
+		$regex = '/^([A-Z]{1,2})([0-9][0-9A-Z]?)\s*([0-9])([A-Z]{2})$/';
+		
+		if (preg_match($regex, $postcode, $part)) { 
+			
+			$code = array(
+		                 'full' => $part[1].$part[2].' '.$part[3].$part[4],
+		                 'area'     => $part[1],
+		                 'district' => $part[2],
+		                 'outer'    => $part[1] . $part[2],
+		                 'sector'   => $part[3],
+		                 'walk'     => $part[4],
+		                 'inner'    => $part[3] . $part[4]
+		                 );		 
+		
+		}else{
+			
+			$code = NULL;
+			
+		}
+	}
+   return $code;                
+}
+
 function get_lat_long($code) {
   if (!$code) {
     return FALSE;
