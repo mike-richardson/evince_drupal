@@ -74,7 +74,7 @@ function evince_dir_search_quicksearch_form(&$form_state = NULL) {
   );
 
   // if on search page check for content otherwise set search text to nothing
-  if (request_uri() == "/evince/dir") {
+  //if (request_uri() == "/evince/dir") {
     $search = evince_dir_get_search();
 
     // if no search context, delete any nodes created by e.g. categories
@@ -85,10 +85,10 @@ function evince_dir_search_quicksearch_form(&$form_state = NULL) {
     else {
       $quick_search = $search['quick_search'];
     }
-  }
-  else {
-    $quick_search = '';
-  }
+  //}
+  //else {
+  //  $quick_search = '';
+  //}
 
   $form['search']['quick_search'] = array(
     '#type' => 'textfield',
@@ -98,7 +98,7 @@ function evince_dir_search_quicksearch_form(&$form_state = NULL) {
 
   $form['search']['submit-qs'] = array(
     '#type' => 'submit',
-    '#value' => t('Quick search'),
+    '#value' => t('Search'),
     '#name' => 'submit-qs',
   );
 

@@ -34,38 +34,40 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
 
 //Address
   $address = (array)$contact_details['Address'];
-  // Get long and lat for Google maps...
-  $gridref = (array)$address['GridReference'];
-
-  $bs7666_address = (array)$address['BS7666Address'];
-
-  $paon = (array)$bs7666_address['PAON'];
-  $paon = $paon['Description'];
-
-  $street = $bs7666_address['StreetDescription'];
-  $town = $bs7666_address['Town'];
-  $post_town = $bs7666_address['PostTown'];
-  $postcode = $bs7666_address['PostCode'];
-  $address = NULL;
-  if (is_numeric(substr($paon, 0, 1))) {
-    $address = array();
-    $address[] = $paon . " " . $street;;
-  } 
-  else {
-    $address = array();
-    $address[] = $paon;
-    $address[] = $street;
-  }
-  if ($town) {
-    $address[] = $town;
-  }
-  if ($post_town) {
-    $address[] = $post_town;
-  }
-  $address[] = $postcode;
-  $address = implode('<br />', $address);
-  $longitude = $gridref['Longitude'];
-  $latitude = $gridref['Latitude'];
+	if (!empty($address)) {
+	  // Get long and lat for Google maps...
+	  $gridref = (array)$address['GridReference'];
+	
+	  $bs7666_address = (array)$address['BS7666Address'];
+	
+	  $paon = (array)$bs7666_address['PAON'];
+	  $paon = $paon['Description'];
+	
+	  $street = $bs7666_address['StreetDescription'];
+	  $town = $bs7666_address['Town'];
+	  $post_town = $bs7666_address['PostTown'];
+	  $postcode = $bs7666_address['PostCode'];
+	  $address = NULL;
+	  if (is_numeric(substr($paon, 0, 1))) {
+	    $address = array();
+	    $address[] = $paon . " " . $street;;
+	  } 
+	  else {
+	    $address = array();
+	    $address[] = $paon;
+	    $address[] = $street;
+	  }
+	  if ($town) {
+	    $address[] = $town;
+	  }
+	  if ($post_town) {
+	    $address[] = $post_town;
+	  }
+	  $address[] = $postcode;
+	  $address = implode('<br />', $address);
+    $longitude = $gridref['Longitude'];
+    $latitude = $gridref['Latitude'];
+  } // End check for address
 
 //Contact Details
   $contact_number = (array)$contact_details['ContactNumber'];
@@ -219,17 +221,31 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
   $notes = (array)$xml['Notes'];
 
 //Costs
-  if (is_array($xml['CostDetails'])) {
+	if (!empty($xml['CostDetails'])) {    
+	  $costs = array();
     $cost_details = (array)$xml['CostDetails'];
+    //dsm($cost_details);
     $contact_for_costs = $cost_details['ContactForCosts'];
     $other_costs = $cost_details['OtherCosts'];
-    if ($contact_for_costs != "true") {
-      $costs[] = $cost_details['OtherCosts'];
+    if ($contact_for_costs == "false") {
+      if ($cost_details['OtherCosts']) {
+     	  $costs[] = $cost_details['OtherCosts'];
+     	}
     } 
-    else {
-      $costs[] = "Please contact for details.";
+		if ($contact_for_costs == "true") {
+			$costs[] = "Please contact for details.";
     }
   } 
+  
+  if (!empty($xml['Costs'])) {    
+	  $othercosts = array();
+    $other_costs = (array)$xml['Costs'];
+    foreach ($other_costs as $cost_detail) {
+    	$othercosts[] = "&pound;". number_format($cost_detail->Cost). " " . $cost_detail->CostType;
+    }
+    $othercosts = implode('<br />', $othercosts);
+    dsm($othercosts);
+	}
 
 
 //Build output array
@@ -237,8 +253,7 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
 
   $output .= '<h2>'. $title .'</h2>';
   $output .= '<p>'. $description .'</p>';
-
-    if ($address) {
+  if ($address) {
     $hdr = array('Address');
     $row = array();
     $row[] = array(
@@ -303,6 +318,15 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
     $hdr = array('Costs');
     $row = array();
     $row[] = $costs;
+    $output .= "<div class='costs'>" . theme('table', $hdr, $row) . "</div>";
+  }
+  
+  if ($othercosts) {
+    $hdr = array('Costs');
+    $row = array();
+    $row[] = array(
+    	'#costs' => $othercosts,
+    );
     $output .= "<div class='costs'>" . theme('table', $hdr, $row) . "</div>";
   }
 
