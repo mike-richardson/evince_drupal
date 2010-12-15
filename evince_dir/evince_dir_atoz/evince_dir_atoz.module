@@ -114,7 +114,9 @@ function evince_dir_atoz_page_atoz($start_char = NULL, $start_record = 0) {
     $summary = htmlspecialchars_decode($item['description'], ENT_QUOTES);
     $location = $item['location'];
     $contact = $item['contact'];
-
+		if (is_numeric(substr($contact,0,1))) {
+			$contact=format_telfax2($contact);
+		}
     $output_list[] = array(
      '#title' => l($name, 'evince/dir/atoz/'. $start_char . '/' . $record_type . '/' . $record_id),
      '#summary' => $summary,

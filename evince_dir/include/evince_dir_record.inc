@@ -237,14 +237,16 @@ function evince_dir_display_record($record_type = NULL, $record_id = 0, $ref, $p
     }
   } 
   
-  if (!empty($xml['Costs'])) {    
+  if (!empty($xml['Costs'])) { 
+  	//dsm("Found ".count($xml['Costs'])." other costs...");   
 	  $othercosts = array();
     $other_costs = (array)$xml['Costs'];
-    foreach ($other_costs as $cost_detail) {
-    	$othercosts[] = "&pound;". number_format($cost_detail->Cost). " " . $cost_detail->CostType;
-    }
+    $cost_types = (array)$other_costs['CostType'];
+    $cost_values = (array)$other_costs['Cost'];
+		for($i=0; $i<count($cost_types); $i++) {
+			$othercosts[$i] = "&pound;".number_format($cost_values[$i]). " ".$cost_types[$i];
+		}
     $othercosts = implode('<br />', $othercosts);
-    dsm($othercosts);
 	}
 
 
